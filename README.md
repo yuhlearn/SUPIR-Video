@@ -5,13 +5,6 @@
 > Shenzhen Institute of Advanced Technology; Shanghai AI Laboratory; University of Sydney; The Hong Kong Polytechnic University; ARC Lab, Tencent PCG; The Chinese University of Hong Kong <br>
 
 
-<p align="center">
-  <img src="assets/teaser.png">
-</p>
-
----
-#### 🚀 We're thrilled to announce the official launch of SupPixel AI! Experience the next level of image processing and upscaling with our cutting-edge AI technology based on SUPIR. Explore now at [suppixel.ai](https://supir.suppixel.ai/home).
-
 ---
 ## 🔧 Dependencies and Installation
 
@@ -30,14 +23,6 @@
     ```
 
 3. Download Checkpoints
-
-For users who can connect to huggingface, please leave `SDXL_CLIP1_PATH, SDXL_CLIP2_CKPT_PTH` in `CKPT_PTH.py` as `None`. These CLIPs will be downloaded automatically. 
-
-#### Dependent Models
-Will be downloaded automatically unless specified as mentioned above.
-
-* [SDXL CLIP Encoder-1](https://huggingface.co/openai/clip-vit-large-patch14)
-* [SDXL CLIP Encoder-2](https://huggingface.co/laion/CLIP-ViT-bigG-14-laion2B-39B-b160k)
 
 Store the following in `checkpoints`:
   
@@ -59,6 +44,10 @@ Store the following in `supir_checkpoints`:
     * [CKPT_PTH.py] --> SDXL_CLIP1_PATH, SDXL_CLIP2_CACHE_DIR 
     * [options/SUPIR_v0.yaml] --> SDXL_CKPT, SUPIR_CKPT_Q, SUPIR_CKPT_F
     ```
+  For users who can connect to huggingface, please leave `SDXL_CLIP1_PATH, SDXL_CLIP2_CKPT_PTH` in `CKPT_PTH.py` as `None`. These CLIPs will be downloaded automatically. 
+  
+  * [SDXL CLIP Encoder-1](https://huggingface.co/openai/clip-vit-large-patch14)
+  * [SDXL CLIP Encoder-2](https://huggingface.co/laion/CLIP-ViT-bigG-14-laion2B-39B-b160k)
 ---
 
 ## Usage of SUPIR-Video
