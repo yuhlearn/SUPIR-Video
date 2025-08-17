@@ -5,6 +5,7 @@ model:
     diffusion_dtype: fp16
     scale_factor: 0.13025
     disable_first_stage_autocast: True
+    compile_model: False
     network_wrapper: sgm.modules.diffusionmodules.wrappers.ControlWrapper
 
     denoiser_config:
@@ -34,7 +35,7 @@ model:
         use_spatial_transformer: True
         use_linear_in_transformer: True
         transformer_depth: [1, 2, 10]  # note: the first is unused (due to attn_res starting at 2) 32, 16, 8 --> 64, 32, 16
-#        transformer_depth: [1, 1, 4]
+        #transformer_depth: [1, 1, 4]
         context_dim: 2048
         spatial_transformer_attn_type: softmax-xformers
         legacy: False
@@ -59,6 +60,7 @@ model:
         use_spatial_transformer: True
         use_linear_in_transformer: True
         transformer_depth: [1, 2, 10]  # note: the first is unused (due to attn_res starting at 2) 32, 16, 8 --> 64, 32, 16
+        #transformer_depth: [1, 1, 4]
         context_dim: 2048
         spatial_transformer_attn_type: softmax-xformers
         legacy: False
@@ -126,7 +128,7 @@ model:
           target: torch.nn.Identity
 
     sampler_config:
-      target: sgm.modules.diffusionmodules.sampling.RestoreEDMSampler
+      target: sgm.modules.diffusionmodules.sampling.RestoreDPMPP2MSampler
       params:
         num_steps: 100
         restore_cfg: 4.0
@@ -149,14 +151,35 @@ model:
         unreal engine, blurring, dirty, messy, worst quality, low quality, frames, watermark, signature, 
         jpeg artifacts, deformed, lowres, over-smooth'
 
-SDXL_CKPT: /opt/data/private/AIGC_pretrain/SDXL_cache/sd_xl_base_1.0_0.9vae.safetensors
-SUPIR_CKPT_F: /opt/data/private/AIGC_pretrain/SUPIR_cache/SUPIR-v0F.ckpt
-SUPIR_CKPT_Q: /opt/data/private/AIGC_pretrain/SUPIR_cache/SUPIR-v0Q.ckpt
+SDXL_CKPT: checkpoints/Juggernaut_RunDiffusionPhoto2_Lightning_4Steps.safetensors
+SUPIR_CKPT_F: supir_checkpoints/SUPIR-v0F_fp16.safetensors
+SUPIR_CKPT_Q: supir_checkpoints/SUPIR-v0Q_fp16.safetensors
 SUPIR_CKPT: ~
 
 default_setting:
-  s_cfg_Quality: 7.5
-  spt_linear_CFG_Quality: 4.0
-  s_cfg_Fidelity: 4.0
-  spt_linear_CFG_Fidelity: 1.0
-  edm_steps: 50
+  prompt: ''
+  a_prompt: 'Cinematic, High Contrast, highly detailed, taken using a Canon EOS R camera, 
+             hyper detailed photo - realistic maximum detail, 32k, Color Grading, ultra HD, extreme meticulous detailing, 
+             skin pore detailing, hyper sharpness, perfect without deformations.'
+  n_prompt: 'painting, oil painting, illustration, drawing, art, sketch, oil painting, cartoon, CG Style, 3D render, 
+             unreal engine, blurring, dirty, messy, worst quality, low quality, frames, watermark, signature, 
+             jpeg artifacts, deformed, lowres, over-smooth'
+  num_samples: 1
+  upscale: 1
+  edm_steps: 8
+  s_stage2: 0.85
+  s_cfg: 1.0
+  seed: -1
+  s_churn: 5
+  s_noise: 1.003
+  color_fix_type: 'Wavelet'
+  diff_dtype: 'fp16'
+  ae_dtype: 'bf16'
+  gamma_correction: 1.0
+  gaussian_sigma: 0.0
+  linear_CFG: True
+  linear_s_stage2: False
+  spt_linear_CFG: 2.0
+  spt_linear_s_stage2: 0.0
+  model_select: "v0-F"
+  min_size: 768

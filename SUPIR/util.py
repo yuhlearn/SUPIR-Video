@@ -40,20 +40,21 @@ def create_SUPIR_model(config_path, SUPIR_sign=None, load_default_setting=False)
     if config.SUPIR_CKPT is not None:
         model.load_state_dict(load_state_dict(config.SUPIR_CKPT), strict=False)
     if SUPIR_sign is not None:
-        assert SUPIR_sign in ['F', 'Q']
-        if SUPIR_sign == 'F':
+        assert SUPIR_sign in ['v0-F', 'v0-Q']
+        if SUPIR_sign == 'v0-F':
             model.load_state_dict(load_state_dict(config.SUPIR_CKPT_F), strict=False)
-        elif SUPIR_sign == 'Q':
+        elif SUPIR_sign == 'v0-Q':
             model.load_state_dict(load_state_dict(config.SUPIR_CKPT_Q), strict=False)
     if load_default_setting:
         default_setting = config.default_setting
         return model, default_setting
     return model
 
+
 def load_QF_ckpt(config_path):
     config = OmegaConf.load(config_path)
-    ckpt_F = torch.load(config.SUPIR_CKPT_F, map_location='cpu')
-    ckpt_Q = torch.load(config.SUPIR_CKPT_Q, map_location='cpu')
+    ckpt_F = load_state_dict(config.SUPIR_CKPT_F)
+    ckpt_Q = load_state_dict(config.SUPIR_CKPT_Q)
     return ckpt_Q, ckpt_F
 
 
@@ -143,7 +144,6 @@ def fix_resize(input_image, size=512, unit_resolution=64):
     img = cv2.resize(input_image, (W, H), interpolation=cv2.INTER_LANCZOS4 if upscale > 1 else cv2.INTER_AREA)
     img = img.round().clip(0, 255).astype(np.uint8)
     return img
-
 
 
 def Numpy2Tensor(img):

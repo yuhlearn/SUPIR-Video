@@ -10,7 +10,7 @@ from torch.nn.functional import interpolate
 from SUPIR.utils.tilevae import VAEHook
 
 class SUPIRModel(DiffusionEngine):
-    def __init__(self, control_stage_config, ae_dtype='fp32', diffusion_dtype='fp32', p_p='', n_p='', *args, **kwargs):
+    def __init__(self, control_stage_config, ae_dtype, diffusion_dtype, p_p='', n_p='', *args, **kwargs):
         super().__init__(*args, **kwargs)
         control_model = instantiate_from_config(control_stage_config)
         self.model.load_control_model(control_model)
@@ -77,7 +77,7 @@ class SUPIRModel(DiffusionEngine):
         return self.decode_first_stage(x)
 
     @torch.no_grad()
-    def batchify_sample(self, x, p, p_p='default', n_p='default', num_steps=100, restoration_scale=4.0, s_churn=0, s_noise=1.003, cfg_scale=4.0, seed=-1,
+    def batchify_sample(self, x, p, p_p='default', n_p='default', num_steps=100, restoration_scale=-1.0, s_churn=0, s_noise=1.003, cfg_scale=4.0, seed=-1,
                         num_samples=1, control_scale=1, color_fix_type='None', use_linear_CFG=False, use_linear_control_scale=False,
                         cfg_scale_start=1.0, control_scale_start=0.0, **kwargs):
         '''
@@ -162,7 +162,7 @@ class SUPIRModel(DiffusionEngine):
 
         if not isinstance(p[0], list):
             batch['txt'] = [''.join([_p, p_p]) for _p in p]
-            with torch.cuda.amp.autocast(dtype=self.ae_dtype):
+            with torch.amp.autocast('cuda', dtype=self.ae_dtype):
                 c, uc = self.conditioner.get_unconditional_conditioning(batch, batch_uc)
         else:
             assert len(p) == 1, 'Support bs=1 only for local prompt conditioning.'
@@ -170,7 +170,7 @@ class SUPIRModel(DiffusionEngine):
             c = []
             for i, p_tile in enumerate(p_tiles):
                 batch['txt'] = [''.join([p_tile, p_p])]
-                with torch.cuda.amp.autocast(dtype=self.ae_dtype):
+                with torch.amp.autocast('cuda', dtype=self.ae_dtype):
                     if i == 0:
                         _c, uc = self.conditioner.get_unconditional_conditioning(batch, batch_uc)
                     else:
